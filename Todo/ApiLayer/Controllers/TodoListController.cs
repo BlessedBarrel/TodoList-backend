@@ -1,8 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using ApplicationLayer.Interface;
-using DomainLayer.Dto;
-using DomainLayer.Models;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Dto;
 
 namespace Api.Controller;
 
@@ -19,11 +17,11 @@ public class TodoListController : ControllerBase
 
     [HttpPost]
     [Route("CreateTask")]
-    public async Task<IActionResult> CreateTask (CreateTask task)
+    public async Task<IActionResult> CreateTask (CreateTask request)
     {
         //validation here 
 
-        var result = await todoService.CreateTaskAsync(task);
+        var result = await todoService.CreateTaskAsync(request);
         if(result== null)
         {
             return BadRequest();
@@ -31,4 +29,38 @@ public class TodoListController : ControllerBase
         return CreatedAtAction(nameof(CreateTask), new { id = result.Id }, result);
         
     }
+
+    [HttpGet("{TaskId}")]
+    public async Task<IActionResult> GetTaskById ([FromRoute] int TaskId)
+    {
+        var result = await todoService.GetTaskByIdAsync(TaskId);
+        if(result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
+
+    }
+
+    [HttpPut("{TaskId}")]
+    public async Task<IActionResult> UpdateTask([FromRoute] int TaskId, [FromBody] UpdateTask request)
+    {
+        //validation
+        var result = await todoService.UpdateTaskAsync(TaskId, request);
+        
+        if(result == null)
+        return NotFound();
+        
+        return NoContent();
+    }
+
+    [HttpDelete("{TaskId}")]
+    public async Task<IActionResult> DeleteTask([FromRoute] int TaskId)
+    {
+        var result = await todoService.DeleteTaskAsync(TaskId);
+        if(result == null)
+            return NotFound();
+        return NoContent();
+    }
+
 }

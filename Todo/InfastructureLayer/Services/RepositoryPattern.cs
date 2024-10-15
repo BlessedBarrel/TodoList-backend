@@ -20,17 +20,35 @@ public class RepositoryPattern<T> : IRepositoryPattern<T> where T : class
     {
         return await dbset.FindAsync(id);
     }
+
     public async Task<T?> FirstOrDefaultAsync(Expression<Func<T,bool>> predicate )
     {
         return await dbset.FirstOrDefaultAsync(predicate);
     }
+
     public async Task AddAsync(T TEntity)
     {
         await dbset.AddAsync(TEntity);
     }
+
+    public void Delete(T TEntity)
+    {
+        dbset.Remove(TEntity);
+    }
+
     public async Task SaveChangesAsync()
     {
         await context.SaveChangesAsync();
+    }
+
+    public void UpdatechangesAsync(T TEntity)
+    {
+        dbset.Update(TEntity);
+    }
+
+    public async Task<bool> ExistsAsync(Expression<Func<T,bool>> predicate)
+    {
+        return await dbset.AnyAsync(predicate);
     }
 
 }

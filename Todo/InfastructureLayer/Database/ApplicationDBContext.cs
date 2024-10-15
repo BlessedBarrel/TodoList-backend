@@ -10,6 +10,10 @@ public class ApplicationDbContext : DbContext
     {
 
     }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+    }
     
     public DbSet<TodoModel> Tasks { get; set; }
 }
